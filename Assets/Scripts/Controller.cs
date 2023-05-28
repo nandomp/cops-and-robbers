@@ -241,9 +241,22 @@ public class Controller : MonoBehaviour
 
         //TODO: Implementar BFS. Los nodos seleccionables los ponemos como selectable=true
         //Tendrás que cambiar este código por el BFS
-        for(int i = 0; i < Constants.NumTiles; i++)
+        for (int i = 0; i < Constants.NumTiles; i++)
         {
-            tiles[i].selectable = true;
+            // inicializamos todas las casillas como false
+            tiles[i].selectable = false;
+        }
+
+        // Y aqui simplemente asignamos a las casillas adyacentes de la posicion actual (indexcurrentTile) el atributo de seleccionables,
+        // y también a las adyacentes de las adyacentes
+        foreach (int casillaAdyacente in tiles[indexcurrentTile].adjacency)
+        {
+            tiles[casillaAdyacente].selectable = true;
+
+            foreach (int casillaAdyacente2 in tiles[casillaAdyacente].adjacency)
+            {
+                tiles[casillaAdyacente2].selectable = true;
+            }
         }
 
 
