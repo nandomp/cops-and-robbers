@@ -182,9 +182,18 @@ public class Controller : MonoBehaviour
         - Movemos al caco a esa casilla
         - Actualizamos la variable currentTile del caco a la nueva casilla
         */
-        robber.GetComponent<RobberMove>().MoveToTile(tiles[robber.GetComponent<RobberMove>().currentTile]);
-    }
 
+        //Movimiento aleatorio del ladrón!
+        // Aqui contamos cuantas casillas tiene adyacentes el ladrón, restándole una, la actual
+        int numCasillasAdyacentes = tiles[robber.GetComponent<RobberMove>().currentTile].adjacency.Count - 1;
+        // Cogemos una casilla al azar de las disponibles del ladrón
+        Tile casillaRandomAdyacenteLadron = tiles[tiles[robber.GetComponent<RobberMove>().currentTile].adjacency[Random.Range(0, numCasillasAdyacentes)]];
+        // Y movemos al ladrón ahí
+        robber.GetComponent<RobberMove>().MoveToTile(casillaRandomAdyacenteLadron);
+        // Y le asignamos la casilla como la actual
+        robber.GetComponent<RobberMove>().currentTile = casillaRandomAdyacenteLadron.numTile;
+    }
+    
     public void EndGame(bool end)
     {
         if(end)
