@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -177,23 +178,51 @@ public class Controller : MonoBehaviour
         tiles[clickedTile].current = true;
         FindSelectableTiles(false);
 
-        /*TODO: Cambia el código de abajo para hacer lo siguiente
-        - Elegimos una casilla aleatoria entre las seleccionables que puede ir el caco
-        - Movemos al caco a esa casilla
-        - Actualizamos la variable currentTile del caco a la nueva casilla
-        */
+        //TODO: Cambia el código de abajo para hacer lo siguiente
+        //- Elegimos una casilla aleatoria (ya no es aleatoria! ahora es la mas lejana!) entre las seleccionables que puede ir el caco
+        Tile casillaLejosPolis = GetFurthestTileFromCops();
+        int casillaLejosPolisNumero = casillaLejosPolis.numTile;
+        //- Movemos al caco a esa casilla
+        robber.GetComponent<RobberMove>().MoveToTile(casillaLejosPolis);
+        //- Actualizamos la variable currentTile del caco a la nueva casilla
+        robber.GetComponent<RobberMove>().currentTile = casillaLejosPolisNumero;
 
-        // Movimiento aleatorio del ladrón!
-        // Aqui contamos cuantas casillas tiene adyacentes el ladrón, restándole una, la actual
-        int numCasillasAdyacentes = tiles[robber.GetComponent<RobberMove>().currentTile].adjacency.Count - 1;
-        // Cogemos una casilla al azar de las disponibles del ladrón
-        Tile casillaRandomAdyacenteLadron = tiles[tiles[robber.GetComponent<RobberMove>().currentTile].adjacency[Random.Range(0, numCasillasAdyacentes)]];
-        // Y movemos al ladrón ahí
-        robber.GetComponent<RobberMove>().MoveToTile(casillaRandomAdyacenteLadron);
-        // Y le asignamos la casilla como la actual
-        robber.GetComponent<RobberMove>().currentTile = casillaRandomAdyacenteLadron.numTile;
     }
-    
+
+    public Tile GetFurthestTileFromCops()
+    {
+        // Tiene que ser null, si no Unity llora que te cagas
+        Tile furthest = null;
+        float distanceToCops;
+        float auxDistance = 0;
+        //GameObject nearestCop = null;
+        foreach (Tile tile in tiles)
+        {
+            if (tile.selectable)
+            {
+                distanceToCops = 0;
+                Debug.Log("Mirando la casilla " + tile.numTile);
+                //Compruebas todos los policias, en el caso de que la casilla anterior sea mayor a la obtenida nuevamente
+                //se sustituye automaticamente en el bucle, siendo este un sistema modular ya que puedes tener tantos
+                //policias como quieras
+
+                foreach (GameObject cop in cops)
+                {
+                    distanceToCops = Vector3.Distance(tile.transform.position, cop.transform.position) + distanceToCops;
+                }
+                Debug.Log("Distancia a los polis " + distanceToCops);
+                if (distanceToCops > auxDistance)
+                {
+                    Debug.Log("Distancia a los polis es mayor " + distanceToCops);
+                    auxDistance = distanceToCops;
+                    furthest = tile;
+                }
+            }
+        }
+        Debug.Log("Casilla mas lejana" + furthest.numTile);
+        return furthest;
+    }
+
     public void EndGame(bool end)
     {
         if(end)
