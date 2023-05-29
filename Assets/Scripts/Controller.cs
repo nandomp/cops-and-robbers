@@ -183,7 +183,7 @@ public class Controller : MonoBehaviour
         - Actualizamos la variable currentTile del caco a la nueva casilla
         */
 
-        //Movimiento aleatorio del ladrón!
+        // Movimiento aleatorio del ladrón!
         // Aqui contamos cuantas casillas tiene adyacentes el ladrón, restándole una, la actual
         int numCasillasAdyacentes = tiles[robber.GetComponent<RobberMove>().currentTile].adjacency.Count - 1;
         // Cogemos una casilla al azar de las disponibles del ladrón
